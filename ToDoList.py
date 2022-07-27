@@ -24,16 +24,11 @@ class Cmd:
     def addTDL(self):
         key = str(date.today())
         if key in self.TdlDict:
-            # exist
             pass
         else:
-            # none
             todayTDL = TDL()
             self.TdlDict.update({key: todayTDL})
 
-        # def mainFuntion():
-        # def startScreen():
-        # def mainScreen():
     def appendTDL(self):
         key = str(date.today())
         print('Before')
@@ -46,7 +41,12 @@ class Cmd:
     def modifyTDL(self):
         key = str(date.today())
         self.printTDL(key=key)
-        index = int(input('수정할 계획의 번호를 입력하시오 : '))
+        while True:
+            try:
+                index = int(input('수정할 계획의 번호를 입력하시오 : '))
+                break
+            except ValueError as e:
+                print('잘못된 값을 입력했습니다, 숫자값를 입력하십시요.')
         AfterTD = input('수정할 내용을 입력하시오 : ')
         print('Before')
         self.TdlDict[key].modifyTD(index-1, AfterTD)
@@ -57,20 +57,35 @@ class Cmd:
         key = str(date.today())
         print('Before')
         self.printTDL(key=key)
-        index = int(input('삭제할 계획의 번호를 입력하시오 : '))
+        while True:
+            try:
+                index = int(input('삭제할 계획의 번호를 입력하시오 : '))
+                break
+            except ValueError as e:
+                print('잘못된 값을 입력했습니다, 숫자값를 입력하십시요.')
         print('After')
         self.TdlDict[key].deleteTD(index-1)
         self.printTDL(key=key)
 
     def showTDL(self):
-        key = input('조회 할 날짜를 양식에 맞춰 입력하시오 (YYYY-MM-DD) : ')
-        self.printTDL(key=key)
+        while True:
+            key = input('조회 할 날짜를 양식에 맞춰 입력하시오 (YYYY-MM-DD) : ')
+            try:
+                self.printTDL(key=key)
+                break
+            except KeyError as e:
+                print('잘못된 입력이 들어왔습니다. 다시 입력하시오')
 
     def completeTD(self):
         key = str(date.today())
-        index = int(input('완료한 계획의 번호를 입력하시오 : '))
         print('Before')
         self.printTDL(key=key)
+        while True:
+            try:
+                index = int(input('완료한 계획의 번호를 입력하시오 : '))
+                break
+            except ValueError as e:
+                print('잘못된 값을 입력했습니다, 숫자값를 입력하십시요.')
         self.TdlDict[key].complete(index-1)
         print('After')
         self.printTDL(key=key)
@@ -109,13 +124,22 @@ class TDL:
         self.TDL.append(newTD)
 
     def deleteTD(self, index):
-        self.TDL.pop(index)
+        try:
+            self.TDL.pop(index)
+        except IndexError:
+            print('잘못된 값을 입력했습니다.')
 
     def modifyTD(self, index, modifyedTD):
-        self.TDL[index].name = modifyedTD
+        try:
+            self.TDL[index].name = modifyedTD
+        except IndexError:
+            print('잘못된 값을 입력했습니다.')
 
     def complete(self, index):
-        self.TDL[index].complete = 'O'
+        try:
+            self.TDL[index].complete = 'O'
+        except IndexError:
+            print('잘못된 값을 입력했습니다.')
 
 
 # main
@@ -123,7 +147,7 @@ os.system('CLS')
 cmd = Cmd()
 print('오늘의 To Do List')
 cmd.printTDL(str(date.today()))
-while 1:
+while True:
     curCmd = input('''
 사용할 기능에 맞는 숫자를 입력하시오
 
